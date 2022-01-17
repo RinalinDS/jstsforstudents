@@ -1,11 +1,13 @@
 import {
+    addCompanyName,
     addNewBooksToUser,
     moveUser, removeBook, skillsGrow,
-    updateBook,
+    updateBook, updateCompanyName, updateCompanyName2,
     upgradeUserLaptop,
     UserWithBooksType,
-    UserWithLaptopType
+    UserWithLaptopType, UserWithSkillsType, WithCompaniesType
 } from "./10_01";
+import exp from "constants";
 
 test("Laptop should be macbook", () => {
     let user: UserWithLaptopType = {
@@ -98,7 +100,7 @@ test("update js to ts books to user", () => {
 
 
 test("update skills user", () => {
-    let user: UserWithLaptopType & UserWithBooksType = {
+    let user: UserWithLaptopType & UserWithSkillsType = {
         name: "Dimych",
         hair: 32,
         adress: {
@@ -132,8 +134,9 @@ test("remove js from books", () => {
             title: "Zenbook"
         },
         books: ['css', 'html', 'js', 'react']
-
     }
+
+
     const userCopy = removeBook(user, "js")
 
     expect(user).not.toBe(userCopy)
@@ -142,4 +145,90 @@ test("remove js from books", () => {
     expect(userCopy.books[2]).toBe("react")
     expect(user.books.length).toBe(4)
     expect(userCopy.books.length).toBe(3)
+})
+
+
+test("add company", () => {
+    let user: UserWithLaptopType & WithCompaniesType = {
+        name: "Dimych",
+        hair: 32,
+        adress: {
+            city: "Minsk",
+            house: 12
+        },
+        laptop: {
+            title: "Zenbook"
+        },
+        companies: [
+            {
+                id: 1,
+                title: "Epam"
+            },
+            {
+                id: 2,
+                title: "IT-INCUBATOR"
+            },
+        ]
+    }
+
+    const userCopy = addCompanyName(user, 3, "Google")
+
+    expect(user).not.toBe(userCopy)
+    expect(userCopy["companies"][2]).toEqual({id: 3, title:"Google"})
+    expect(userCopy.laptop).toBe(user.laptop)
+    expect(userCopy.adress).toBe(user.adress)
+    expect(user.companies).not.toBe(userCopy["companies"])
+
+})
+
+test("update company", () => {
+    let user: UserWithLaptopType & WithCompaniesType = {
+        name: "Dimych",
+        hair: 32,
+        adress: {
+            city: "Minsk",
+            house: 12
+        },
+        laptop: {
+            title: "Zenbook"
+        },
+        companies: [
+            {
+                id: 1,
+                title: "Епам"
+            },
+            {
+                id: 2,
+                title: "IT-INCUBATOR"
+            },
+        ]
+    }
+
+    const userCopy = updateCompanyName(user, 1, "EPAM")
+
+    expect(user).not.toBe(userCopy)
+    expect(userCopy["companies"][0]).toEqual({id: 1, title:"EPAM"})
+    expect(userCopy.laptop).toBe(user.laptop)
+    expect(userCopy.adress).toBe(user.adress)
+    expect(user.companies).not.toBe(userCopy["companies"])
+
+})
+
+
+test("update company2", () => {
+
+     let companies = {
+         "Dimych": [{id: 1, title: "Епам"}, {id: 2, title: "IT-INCUBATOR"}],
+         "Denis": [{id: 1, title: "IT-INCUBATOR"}]
+     }
+
+
+const companiesCopy = updateCompanyName2(companies, "Dimych", 1, "EPAM")
+
+    expect(companies).not.toBe(companiesCopy)
+    expect(companies["Dimych"]).not.toBe(companiesCopy["Dimych"])
+    expect(companies["Denis"]).toBe(companiesCopy["Denis"])
+    expect(companiesCopy["Dimych"][0].title).toBe("EPAM")
+
+
 })
